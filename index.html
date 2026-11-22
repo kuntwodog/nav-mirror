@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nav · 我的网址导航</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --text:#1f2329; --sub:#8a9099;
+    --line:#e8eaed; --accent:#4f6ef7; --accent-soft:#eef1ff;
+    --shadow:0 2px 12px rgba(30,40,80,.06); --shadow-h:0 8px 28px rgba(47,80,200,.14);
+  }
+  [data-theme="dark"]{
+    --bg:#11151c; --card:#1a1f28; --text:#e8eaed; --sub:#8b93a1;
+    --line:#282e3a; --accent:#7b8fff; --accent-soft:#232a3d;
+    --shadow:0 2px 12px rgba(0,0,0,.25); --shadow-h:0 8px 28px rgba(0,0,0,.4);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.6;
+    transition:background .3s,color .3s; min-height:100vh;
+    background-image:radial-gradient(circle at 15% 0%,rgba(79,110,247,.08),transparent 40%),
+                     radial-gradient(circle at 85% 5%,rgba(120,80,247,.06),transparent 35%);
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px 80px}
+
+  /* 顶部栏 */
+  .topbar{display:flex;justify-content:flex-end;gap:10px;padding-top:24px}
+  .icon-btn{
+    width:40px;height:40px;border:1px solid var(--line);border-radius:12px;
+    background:var(--card);color:var(--sub);cursor:pointer;font-size:18px;
+    display:flex;align-items:center;justify-content:center;transition:.2s;box-shadow:var(--shadow);
+  }
+  .icon-btn:hover{color:var(--accent);border-color:var(--accent);transform:translateY(-2px)}
+
+  /* Hero */
+  .hero{text-align:center;padding:44px 0 34px}
+  .hero h1{font-size:38px;font-weight:800;letter-spacing:-1px;margin-bottom:8px}
+  .hero h1 .dot{color:var(--accent)}
+  .hero p{color:var(--sub);font-size:15px;margin-bottom:28px}
+  .clock{font-variant-numeric:tabular-nums}
+  .searchbox{
+    max-width:560px;margin:0 auto;display:flex;align-items:center;gap:12px;
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:6px 8px 6px 20px;box-shadow:var(--shadow);transition:.2s;
+  }
+  .searchbox:focus-within{border-color:var(--accent);box-shadow:var(--shadow-h)}
+  .searchbox svg{flex:none;color:var(--sub)}
+  .searchbox input{
+    flex:1;border:none;outline:none;background:transparent;color:var(--text);
+    font-size:15px;padding:10px 0;
+  }
+  .searchbox input::placeholder{color:var(--sub)}
+  .engine-btn{
+    border:none;background:var(--accent-soft);color:var(--accent);font-weight:600;
+    padding:9px 14px;border-radius:10px;cursor:pointer;font-size:13px;white-space:nowrap;
+  }
+  .engine-btn:hover{filter:brightness(.96)}
+
+  /* 博客入口横幅 */
+  .blog-entry{
+    max-width:560px;margin:20px auto 0;display:flex;align-items:center;gap:14px;
+    background:linear-gradient(120deg,#4f6ef7,#7b5cf0);color:#fff;
+    padding:15px 20px;border-radius:15px;text-decoration:none;
+    box-shadow:0 8px 24px rgba(79,110,247,.28);transition:transform .2s,box-shadow .2s;
+  }
+  .blog-entry:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(79,110,247,.4)}
+  .blog-entry .be-icon{font-size:26px;flex:none}
+  .blog-entry .be-text{flex:1;text-align:left;min-width:0}
+  .blog-entry .be-title{font-weight:700;font-size:15px}
+  .blog-entry .be-desc{font-size:11.5px;opacity:.85;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .blog-entry .be-arrow{font-size:20px;opacity:.9;flex:none}
+
+  /* 分类 */
+  .section{margin-top:40px}
+  .section-title{
+    display:flex;align-items:center;gap:10px;font-size:17px;font-weight:700;
+    margin-bottom:18px;
+  }
+  .section-title .bar{width:4px;height:18px;background:var(--accent);border-radius:3px}
+  .section-title .count{font-size:12px;color:var(--sub);font-weight:500}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:18px 16px;display:flex;align-items:center;gap:13px;
+    text-decoration:none;color:inherit;box-shadow:var(--shadow);
+    transition:transform .2s,box-shadow .2s,border-color .2s;
+  }
+  .card:hover{transform:translateY(-4px);box-shadow:var(--shadow-h);border-color:var(--accent)}
+  .favicon{
+    width:42px;height:42px;flex:none;border-radius:11px;display:flex;align-items:center;
+    justify-content:center;font-size:18px;font-weight:800;color:#fff;
+  }
+  .card .meta{min-width:0}
+  .card .name{font-weight:650;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .card .desc{font-size:11.5px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+
+  .footer{text-align:center;color:var(--sub);font-size:12px;margin-top:56px;padding-top:24px;border-top:1px solid var(--line)}
+
+  @media(max-width:600px){
+    .hero h1{font-size:30px}
+    .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+    .card{padding:14px 12px;gap:10px}
+    .favicon{width:36px;height:36px;font-size:15px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <button class="icon-btn" id="themeBtn" title="切换主题">🌙</button>
+  </div>
+
+  <div class="hero">
+    <h1>Nav<span class="dot">.</span></h1>
+    <p>常用网址，一页直达 &nbsp;·&nbsp; <span class="clock" id="clock"></span></p>
+    <div class="searchbox">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input id="searchInput" placeholder="输入关键词，回车搜索…" autocomplete="off">
+      <button class="engine-btn" id="engineBtn" title="点击切换搜索引擎">百度 ⌄</button>
+    </div>
+
+    <a class="blog-entry" href="http://blog.htwok.cn" target="_blank" rel="noopener">
+      <div class="be-icon">✍️</div>
+      <div class="be-text">
+        <div class="be-title">我的博客 · Margin</div>
+        <div class="be-desc">blog.htwok.cn — 点击阅读最新文章</div>
+      </div>
+      <div class="be-arrow">→</div>
+    </a>
+  </div>
+
+  <main id="main"></main>
+
+  <div class="footer">Nav · 我的网址导航 &nbsp;|&nbsp; 简洁 · 高效 · 免广告</div>
+</div>
+
+<script>
+const SITES = [
+  { name:"常用", icon:"常用", desc:"", items:[
+    {n:"百度",d:"中文搜索",u:"https://www.baidu.com",c:"#2932e1",i:"百"},
+    {n:"Google",d:"全球搜索",u:"https://www.google.com",c:"#4285f4",i:"G"},
+    {n:"哔哩哔哩",d:"视频社区",u:"https://www.bilibili.com",c:"#fb7299",i:"B"},
+    {n:"知乎",d:"问答社区",u:"https://www.zhihu.com",c:"#0066ff",i:"知"},
+    {n:"微博",d:"热点资讯",u:"https://weibo.com",c:"#e6162d",i:"微"},
+    {n:"豆瓣",d:"书影音",u:"https://www.douban.com",c:"#2e963a",i:"豆"},
+    {n:"小红书",d:"生活方式",u:"https://www.xiaohongshu.com",c:"#ff2442",i:"红"},
+    {n:"淘宝",d:"购物",u:"https://www.taobao.com",c:"#ff5000",i:"淘"},
+  ]},
+  { name:"开发工具", icon:"开发", desc:"", items:[
+    {n:"GitHub",d:"代码托管",u:"https://github.com",c:"#24292f",i:"GH"},
+    {n:"Stack Overflow",d:"编程问答",u:"https://stackoverflow.com",c:"#f48024",i:"SO"},
+    {n:"MDN",d:"Web 文档",u:"https://developer.mozilla.org/zh-CN",c:"#000000",i:"MD"},
+    {n:"npm",d:"包管理",u:"https://www.npmjs.com",c:"#cb3837",i:"npm"},
+    {n:"Vercel",d:"部署托管",u:"https://vercel.com",c:"#000000",i:"V"},
+    {n:"Cloudflare",d:"CDN/DNS",u:"https://dash.cloudflare.com",c:"#f6821f",i:"CF"},
+    {n:"腾讯云",d:"云服务",u:"https://console.cloud.tencent.com",c:"#006eff",i:"腾"},
+    {n:"Regex101",d:"正则调试",u:"https://regex101.com",c:"#7a3db8",i:"re"},
+  ]},
+  { name:"AI 工具", icon:"AI", desc:"", items:[
+    {n:"ChatGPT",d:"对话助手",u:"https://chatgpt.com",c:"#10a37f",i:"AI"},
+    {n:"Claude",d:"对话助手",u:"https://claude.ai",c:"#d97757",i:"C"},
+    {n:"DeepSeek",d:"深度求索",u:"https://www.deepseek.com",c:"#4d6bfe",i:"D"},
+    {n:"通义千问",d:"阿里大模型",u:"https://tongyi.aliyun.com",c:"#615ced",i:"通"},
+    {n:"Kimi",d:"长文本",u:"https://www.kimi.com",c:"#1a1a1a",i:"K"},
+    {n:"即梦",d:"AI 绘图",u:"https://jimeng.jianying.com",c:"#111827",i:"梦"},
+  ]},
+  { name:"设计素材", icon:"设计", desc:"", items:[
+    {n:"Figma",d:"界面设计",u:"https://www.figma.com",c:"#f24e1e",i:"F"},
+    {n:"Dribbble",d:"设计灵感",u:"https://dribbble.com",c:"#ea4c89",i:"D"},
+    {n:"Behance",d:"作品社区",u:"https://www.behance.net",c:"#1769ff",i:"Be"},
+    {n:"Unsplash",d:"免费图片",u:"https://unsplash.com",c:"#111111",i:"U"},
+    {n:"iconfont",d:"图标库",u:"https://www.iconfont.cn",c:"#333333",i:"图"},
+  ]},
+  { name:"效率学习", icon:"效率", desc:"", items:[
+    {n:"Notion",d:"笔记协作",u:"https://www.notion.so",c:"#111111",i:"N"},
+    {n:"语雀",d:"文档知识库",u:"https://www.yuque.com",c:"#28b967",i:"语"},
+    {n:"腾讯文档",d:"在线协作",u:"https://docs.qq.com",c:"#1a73e8",i:"腾"},
+    {n:"心流",d:"专注计时",u:"https://www.xinflow.app",c:"#6c5ce7",i:"流"},
+    {n:"中国大学MOOC",d:"在线课程",u:"https://www.icourse163.org",c:"#e60012",i:"MOOC"},
+  ]},
+  { name:"娱乐生活", icon:"生活", desc:"", items:[
+    {n:"网易云音乐",d:"听歌",u:"https://music.163.com",c:"#e60026",i:"音"},
+    {n:"YouTube",d:"视频",u:"https://www.youtube.com",c:"#ff0000",i:"YT"},
+    {n:"Steam",d:"游戏",u:"https://store.steampowered.com",c:"#1b2838",i:"S"},
+    {n:"12306",d:"出行购票",u:"https://www.12306.cn",c:"#0066cc",i:"铁"},
+    {n:"高德地图",d:"地图导航",u:"https://www.amap.com",c:"#00a0e9",i:"高"},
+  ]},
+];
+
+const main = document.getElementById('main');
+SITES.forEach(sec=>{
+  const s = document.createElement('section');
+  s.className='section';
+  const cards = sec.items.map(it=>`
+    <a class="card" href="${it.u}" target="_blank" rel="noopener">
+      <div class="favicon" style="background:${it.c}">${it.i}</div>
+      <div class="meta">
+        <div class="name">${it.n}</div>
+        <div class="desc">${it.d}</div>
+      </div>
+    </a>`).join('');
+  s.innerHTML = `<div class="section-title"><span class="bar"></span>${sec.name}<span class="count">${sec.items.length} 个</span></div>
+    <div class="grid">${cards}</div>`;
+  main.appendChild(s);
+});
+
+// 时钟
+function tick(){
+  const now=new Date();
+  const w=['日','一','二','三','四','五','六'][now.getDay()];
+  document.getElementById('clock').textContent =
+    `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 周${w} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+}
+tick(); setInterval(tick,1000*30);
+
+// 搜索引擎切换
+const engines=[
+  {n:'百度',u:'https://www.baidu.com/s?wd='},
+  {n:'Google',u:'https://www.google.com/search?q='},
+  {n:'必应',u:'https://www.bing.com/search?q='},
+];
+let ei=0;
+const eb=document.getElementById('engineBtn');
+eb.onclick=()=>{ei=(ei+1)%engines.length;eb.textContent=engines[ei].n+' ⌄'};
+document.getElementById('searchInput').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    const q=e.target.value.trim();
+    if(q) window.open(engines[ei].u+encodeURIComponent(q),'_blank');
+  }
+});
+
+// 主题切换
+const themeBtn=document.getElementById('themeBtn');
+const saved=localStorage.getItem('nav-theme');
+if(saved==='dark'){document.documentElement.setAttribute('data-theme','dark');themeBtn.textContent='☀️'}
+themeBtn.onclick=()=>{
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  if(isDark){document.documentElement.removeAttribute('data-theme');themeBtn.textContent='🌙';localStorage.setItem('nav-theme','light')}
+  else{document.documentElement.setAttribute('data-theme','dark');themeBtn.textContent='☀️';localStorage.setItem('nav-theme','dark')}
+};
+</script>
+</body>
+</html>
